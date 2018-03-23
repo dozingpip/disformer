@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/freestraws/disformer/issues"
   },
-  "homepage": "https://github.com/freestraws/disformer#readme"
+  "homepage": "https://github.com/freestraws/disformer#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0"
+  }
 }

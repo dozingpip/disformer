@@ -1,0 +1,10 @@
+#topnav {
+    border-bottom: thin solid silver;
+    font-size: 50%;
+    font-weight: bold;
+}
+#topnav ul li {
+    display: inline;
+    list-style: none;
+    padding: 0 1em;
+}

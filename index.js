@@ -22,7 +22,7 @@ var handlebars = require('express-handlebars').create({
 app.engine('handlebars', handlebars.engine);
 app.set('view engine','handlebars');
 
-var session=require('express-session');
+var session = require('express-session');
 
 var passport = require('passport')
     , LocalStrategy = require('passport-local').Strategy
@@ -60,8 +60,6 @@ app.use(passport.session());
 
 app.use(require('body-parser').urlencoded({extended: true}));
 
-app.use('/levelSelect', ensureLoggedIn('/login'));
-
 app.get('/', function(req, res, next){
     res.render('home');
 });
@@ -70,14 +68,16 @@ app.get('/levelSelect', function(req, res, next){
     res.render('levelSelect');
 });
 
-app.get('/login', function(req, res, next){
-    res.render('login');
-});
+// app.get('/login', function(req, res, next){
+//     res.render('api/discord_auth');
+// });
+
+app.use('/api/discord_auth', require('./api/discord_auth'));
 
 var levelSelectRouter = require('./route/levelSelect');
 levelSelectRouter.handlebars = handlebars;
 levelSelectRouter.passport = passport;
-app.use('/levelSelect', levelSelectRouter);
+app.use('/levelSelect', ensureLoggedIn('/login'), levelSelectRouter);
 
 /////// ERROR HANDLING
 

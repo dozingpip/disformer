@@ -25,24 +25,33 @@ app.set('view engine','handlebars');
 var session = require('express-session');
 
 var passport = require('passport')
-    , LocalStrategy = require('passport-local').Strategy
-    , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
+    , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
+    , passport_discord = require('passport-discord');
 
-passport.use(new LocalStrategy(
-    function(username,password,done) {
-        // username and password are strings entered by the user
-        // done is a function to all with the first parameter an error
-        // object or null if no error; the second parameter is false if
-        // login failed or an object representing the user.
-        console.log("Attempting local login for "+username);
-        if(password==="password") {
-            return done(null, {name: username});// why, yes... "password" is my password; I'm an idiot!
-        }
-        else {
-            return done(null, false);//not logged in
-        }
+var scopes = ['identify'];
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  passport.deserializeUser(function(obj, done) {
+    done(null, obj);
+  });
+  
+// var redirect = encodeURIComponent('http://localhost:3000/callback');
+passport.use(new passport_discord({
+    clientID: '415537639039696896',
+    clientSecret: 'fnFfkWkkKyJap-NpsPWViK-6BzNyH9o6',
+    callbackURL: '/levelSelect',
+    scope: scopes
+},
+function(accessToken, refreshToken, profile, cb){
+    if(err){
+        return done(err);
     }
-));
+    User.findOrCreate({discordId: profile.id},function(err, user){
+        return cb(err, user);
+    });
+}));
 
 ///////// PIPELINE /////////////
 
@@ -64,19 +73,24 @@ app.get('/', function(req, res, next){
     res.render('home');
 });
 
-app.get('/levelSelect', function(req, res, next){
-    res.render('levelSelect');
+app.get('/callback',
+    passport.authenticate('discord', { failureRedirect: '/' }), function(req, res) { res.redirect('/levelSelect') } // auth success
+);
+
+app.get('/levelSelect', checkAuth, function(req, res, next){
+    passport.authenticate('discord', { failureRedirect: '/login' }), function(req, res) { res.redirect('/levelSelect') } // auth success
 });
 
-// app.get('/login', function(req, res, next){
-//     res.render('api/discord_auth');
-// });
+app.get('/login', passport.authenticate('discord', {
+    scope: scopes }), function(req, res) {});
 
-app.use('/api/discord_auth', require('./api/discord_auth'));
+// var discord_auth = require('./api/discord_auth');
+// app.use('/api/discord_auth', discord_auth);
 
 var levelSelectRouter = require('./route/levelSelect');
 levelSelectRouter.handlebars = handlebars;
 levelSelectRouter.passport = passport;
+
 app.use('/levelSelect', ensureLoggedIn('/login'), levelSelectRouter);
 
 /////// ERROR HANDLING
@@ -105,6 +119,11 @@ app.use(function (err, req, res, next) {
     res.status(500); // server error
     res.render("500");
 });
+
+function checkAuth(req, res, next) {
+    if (req.isAuthenticated()) return next();
+    res.send('not logged in :(');
+}
 
 
 ////////// STARTUP

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 var fs = require('fs');
 
-const token = "NDE1NTM3NjM5MDM5Njk2ODk2.DW3XlA.1-OrauLvclLjya-RYJD1XTl6ce8";
+const token = require('./config/discord-auth-config').bot_token;
 
 /*
   A ping pong bot, whenever you send "ping", it replies "pong".

@@ -19,6 +19,7 @@ var handlebars = require('express-handlebars').create({
         }
     }
 });
+
 app.engine('handlebars', handlebars.engine);
 app.set('view engine','handlebars');
 
@@ -26,32 +27,33 @@ var session = require('express-session');
 
 var passport = require('passport')
     , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
-    , passport_discord = require('passport-discord');
+    , DiscordStrategy = require('passport-discord').Strategy;
 
 var scopes = ['identify'];
 
 passport.serializeUser(function(user, done) {
     done(null, user);
   });
-  passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function(obj, done) {
     done(null, obj);
-  });
+});
   
 // var redirect = encodeURIComponent('http://localhost:3000/callback');
-passport.use(new passport_discord({
-    clientID: '415537639039696896',
-    clientSecret: 'fnFfkWkkKyJap-NpsPWViK-6BzNyH9o6',
-    callbackURL: '/levelSelect',
-    scope: scopes
-},
-function(accessToken, refreshToken, profile, cb){
-    if(err){
-        return done(err);
+const discordAuth = require('./config/discord-auth-config');
+passport.use(new DiscordStrategy(
+    {
+        clientID: discordAuth.client_id,
+        clientSecret: discordAuth.secret,
+        callbackURL: 'http://localhost:3000/auth/discord/callback',
+        scope: scopes
+    },
+    function(accessToken, refreshToken, profile, done){
+        var user = {
+            username: profile.id
+        }
+        return done(null, user);
     }
-    User.findOrCreate({discordId: profile.id},function(err, user){
-        return cb(err, user);
-    });
-}));
+));
 
 ///////// PIPELINE /////////////
 
@@ -73,8 +75,9 @@ app.get('/', function(req, res, next){
     res.render('home');
 });
 
-app.get('/callback',
-    passport.authenticate('discord', { failureRedirect: '/' }), function(req, res) { res.redirect('/levelSelect') } // auth success
+app.get('/auth/discord/callback',
+    passport.authenticate('discord', { failureRedirect: '/login' }),
+     function(req, res) { res.redirect('/') } // auth success
 );
 
 app.get('/levelSelect', checkAuth, function(req, res, next){
@@ -83,9 +86,6 @@ app.get('/levelSelect', checkAuth, function(req, res, next){
 
 app.get('/login', passport.authenticate('discord', {
     scope: scopes }), function(req, res) {});
-
-// var discord_auth = require('./api/discord_auth');
-// app.use('/api/discord_auth', discord_auth);
 
 var levelSelectRouter = require('./route/levelSelect');
 levelSelectRouter.handlebars = handlebars;

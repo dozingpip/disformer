@@ -8,10 +8,20 @@ const levelsDb = require('../lib/levels');
 const tileDb = require('../lib/tiles');
 const findOptions = {sort: {timestamp: -1}, limit: 20}
 
-router.get('/levels:id', function(req,res){
-    levelsDb.retrieveById(req.params.id).then(
-        level => res.json({error: null, data: {level: level}})
+router.get('/level:id', function(req,res){
+    Promise.all([
+        router.handlebars.getTemplate('views/partials/level.handlebars', {precompiled: true}),
+        levelsDb.retrieveById(req.params.id)
+    ]).then(
+        level => res.render('level', {
+            name: level[1].name,
+            tiles: level[1].tiles,
+            height: level[1].height,
+            width: level[1].width,
+            templates: [{'name': 'level', 'template': level[0]}]
+        })
     ).catch(console.error);
+
 });
 
 router.get('/create', function(req, res){
@@ -86,10 +96,18 @@ var readLevelInput = function(req,res,next) {
     next();
 };
 
-router.post('/', readLevelInput, function(req,res){
-    res.redirect(303, req.baseUrl);
+router.get('/', readLevelInput, function(req,res){
+    Promise.all([
+        router.handlebars.getTemplate('views/levelSelect.handlebars', {precompiled: true}),
+        levelsDb.retrieve(findOptions)
+    ]).then(
+        results => res.render('levelSelect', {
+            levels: results[1],
+            templates: [{'name': 'levelSelect', 'template': results[0]}]
+        })
+    ).catch(console.error);
 });
 
-router.post('/levels', readLevelInput, function(req,res) {
-    res.json({error: null, data: null});
+router.post('/', readLevelInput, function(req,res) {
+    res.redirect(303, req.baseUrl);
 });

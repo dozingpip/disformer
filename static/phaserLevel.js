@@ -1,3 +1,6 @@
+const rowHeight = 100;
+const colWidth = 100;
+
 var config = {
     type: Phaser.AUTO,
     width: 800,
@@ -20,6 +23,9 @@ var game = new Phaser.Game(config);
 
 function preload ()
 {
+    for(let i = 0; i< tiles.length; i++){
+        this.load.image('tile '+tiles[i].index, tiles[i].color);
+    }
     this.load.image('sky', '../assets/sky.png');
     this.load.image('ground', '../assets/platform.png');
     this.load.image('star', '../assets/star.png');
@@ -30,18 +36,27 @@ function preload ()
     );
 }
 
+function createLevel(tiles, w, h){
+    config.width = w;
+    config.height = h;
+    platforms = this.physics.add.staticGroup();
+    for(let i = 0; i< tiles.length; i++){
+        platforms.create(tiles[i].row*colWidth, tiles[i].col*rowHeight, 'tile '+tiles[i].index)
+    }
+}
+
 function create ()
 {
     this.add.image(400, 300, 'sky').setOrigin(0, 0);
     this.add.image(400, 300, 'star');
 
-    platforms = this.physics.add.staticGroup();
+    // platforms = this.physics.add.staticGroup();
 
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    // platforms.create(400, 568, 'ground').setScale(2).refreshBody();
 
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
+    // platforms.create(600, 400, 'ground');
+    // platforms.create(50, 250, 'ground');
+    // platforms.create(750, 220, 'ground');
 
     player = this.physics.add.sprite(100, 450, 'dude');
 

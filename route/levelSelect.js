@@ -28,32 +28,32 @@ router.get('/create', function(req, res){
     res.render("create");
 });
 
-router.get('/phaser', function(req, res){
-    res.render("partials/level");
-})
+router.post('/create', function(req, res){
+    var levelObject = readLevelInput(
+        req.body.message.trim(),
+        req.body.name.trim(),
+        req.user.username.trim());
+    
+    levelsDb.create(levelObject).then(
+        ()=> res.redirect(req.baseUrl + '/')
+    ).catch(console.error);
+});
 
-/**
- * This little helper function is common to both of post / and post /levels
- * @param req
- * @param res
- * @param next
- */
-var readLevelInput = function(req,res,next) {
-    let input = req.body.message;
+var readLevelInput = function(_input, _name, _username) {
     let tiles = [];
 
     // say the input is 33 characters long.
     // 33 % 10 = 3
-    let extra = input.length%LEVEL_WIDTH;
+    let extra = _input.length%LEVEL_WIDTH;
     // even if extra is 0, this still works
     // rows = (33-3)/10 = 3
-    let numRows = (input.length-extra)/LEVEL_WIDTH;
+    let numRows = (_input.length-extra)/LEVEL_WIDTH;
     for(let j = 0; j<numRows; j++){
         tiles[j] = [];
         for(let i = 0; i<LEVEL_WIDTH; i++){
             // when i = 5 and j = 1*10
             // get the 15th character
-            let char = input[(j*LEVEL_WIDTH)+i];
+            let char = _input[(j*LEVEL_WIDTH)+i];
             tile = {
                 character: char,
                 effect: tilesDb.retrieveByChar(char),
@@ -68,7 +68,7 @@ var readLevelInput = function(req,res,next) {
     // need an extra row for these
     if(extra){
         for(let i = 0; i<extra; i++){
-            let char = input[(numRows*LEVEL_WIDTH)+i];
+            let char = _input[(numRows*LEVEL_WIDTH)+i];
                 tile = {
                     character: char,
                     effect: tilesDb.retrieveByChar(char),
@@ -81,19 +81,18 @@ var readLevelInput = function(req,res,next) {
     }
     
     var level = {
-        name: req.body.levelName,
-        createdBy: req.user.username,
+        name: _name,
+        createdBy: _username,
         rating: 0,
         winRate: 0,
         // thumbnail: ,
         height: numRows,
         width: LEVEL_WIDTH,
         tiles: tiles,
-        message: req.body.message,
+        message: _input,
         timestamp: Date.now()
     };
-    levelsDb.create(level).catch(console.errors);
-    next();
+    return level;
 };
 
 router.get('/', readLevelInput, function(req,res){

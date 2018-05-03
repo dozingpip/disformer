@@ -1,4 +1,8 @@
 <p>someday you will be able to select a level here...</p>
-{{#each levels}}
-
+{{#each levels as |level|}}
+    {{#>level}}
+        tiles = {{level.tiles}}
+        width = {{level.width}}
+        height = {{level.height}}
+    {{/level}}
 {{/each}}

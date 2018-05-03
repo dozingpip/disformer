@@ -39,10 +39,10 @@ passport.deserializeUser(function(obj, done) {
 });
   
 // var redirect = encodeURIComponent('http://localhost:3000/callback');
-const discordAuth = require('./config/discord-auth-config');
+const discordAuth = require('./config/discordAuth-options');
 passport.use(new DiscordStrategy(
     {
-        clientID: discordAuth.client_id,
+        clientID: discordAuth.clientID,
         clientSecret: discordAuth.secret,
         callbackURL: 'http://localhost:3000/auth/discord/callback',
         scope: scopes

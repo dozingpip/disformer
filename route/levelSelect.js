@@ -25,7 +25,7 @@ router.get('/level:id', function(req,res){
 });
 
 router.get('/create', function(req, res){
-    res.render("create");
+    res.render("levelSelect/create");
 });
 
 router.post('/create', function(req, res){
@@ -56,7 +56,7 @@ var readLevelInput = function(_input, _name, _username) {
             let char = _input[(j*LEVEL_WIDTH)+i];
             tile = {
                 character: char,
-                effect: tilesDb.retrieveByChar(char),
+                effect: tileDb.retrieveByChar(char),
                 row: i,
                 col: j
             }
@@ -67,13 +67,14 @@ var readLevelInput = function(_input, _name, _username) {
     // take care of the extra few characters
     // need an extra row for these
     if(extra){
+        tiles[numRows] = [];
         for(let i = 0; i<extra; i++){
             let char = _input[(numRows*LEVEL_WIDTH)+i];
                 tile = {
                     character: char,
-                    effect: tilesDb.retrieveByChar(char),
-                    row: i,
-                    col: numRows+1
+                    effect: tileDb.retrieveByChar(char),
+                    row: numRows,
+                    col: i
                 }
                 tiles[tile.row][tile.col] = tile;
         }
@@ -95,7 +96,7 @@ var readLevelInput = function(_input, _name, _username) {
     return level;
 };
 
-router.get('/', readLevelInput, function(req,res){
+router.get('/', function(req,res){
     Promise.all([
         router.handlebars.getTemplate('views/levelSelect.handlebars', {precompiled: true}),
         levelsDb.retrieve(findOptions)
@@ -105,8 +106,4 @@ router.get('/', readLevelInput, function(req,res){
             templates: [{'name': 'levelSelect', 'template': results[0]}]
         })
     ).catch(console.error);
-});
-
-router.post('/', readLevelInput, function(req,res) {
-    res.redirect(303, req.baseUrl);
 });

@@ -1,17 +1,7 @@
 <h3>{{{name}}}</h3>
-{{#each tiles}}
-{{#each tile}}
-<p>{{{this.character}}}<br>
-{{{this.row}}}
-</p>
-{{/each}}
-{{/each}}
+<p>{{{message}}}</p>
 <script src="//cdn.jsdelivr.net/npm/phaser@3.1.1/dist/phaser.js"></script>
 <script src="/phaserLevel.js"></script>
 {{#section "jQuery"}}
-<script>$(function(){createLevel(
-    [
-    {{{tiles}}}
-    ],
-    {{{width}}}, {{{height}}} );})</script>
+<script>$(function(){createLevel("{{{message}}}",{{{width}}}, {{{height}}} );})</script>
 {{/section}}

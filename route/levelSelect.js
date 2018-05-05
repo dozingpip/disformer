@@ -15,7 +15,7 @@ router.get('/level/:id', function(req,res){
     ]).then(
         level => res.render('partials/level', {
             name: level[1].name,
-            tiles: level[1].tiles,
+            message: level[1].message,
             height: level[1].height,
             width: level[1].width,
             templates: [{'name': 'level', 'template': level[0]}]
@@ -40,52 +40,6 @@ router.post('/create', function(req, res){
 
 var readLevelInput = function(_input, _name, _username) {
     console.log(_input);
-    let tiles = new Array();
-
-    // say the input is 33 characters long.
-    // 33 % 10 = 3
-    let extra = _input.length%LEVEL_WIDTH;
-    console.log("extra tiles "+extra);
-    // even if extra is 0, this still works
-    // rows = (33-3)/10 = 3
-    let numRows = (_input.length-extra)/LEVEL_WIDTH;
-    console.log("num rows"+ numRows);
-    for(let j = 0; j<numRows; j++){
-        tiles[j] = new Array();
-        for(let i = 0; i<LEVEL_WIDTH; i++){
-            // when i = 5 and j = 1*10
-            // get the 15th character
-            let char = _input[(j*LEVEL_WIDTH)+i];
-            tile = {
-                character: char,
-                //effect: tileDb.retrieveByChar(char),
-                row: j,
-                col: i
-            }
-            
-            
-            tiles[j][i] = tile;
-        }
-    }
-    
-    // take care of the extra few characters
-    // need an extra row for these
-    if(extra){
-        tiles[numRows] = new Array();
-        for(let i = 0; i<extra; i++){
-            let char = _input[(numRows*LEVEL_WIDTH)+i];
-            console.log("extra char "+ i + " is "+ char);
-            tile = {
-                character: char,
-                //effect: tileDb.retrieveByChar(char),
-                row: numRows,
-                col: i
-            };
-            console.log("row " +tile.row+ ", col "+ tile.col);
-            tiles[numRows][i] = tile;
-        }
-        numRows+=1;
-    }
     
     var level = {
         name: _name,
@@ -95,7 +49,6 @@ var readLevelInput = function(_input, _name, _username) {
         // thumbnail: ,
         height: numRows,
         width: LEVEL_WIDTH,
-        tiles: tiles,
         message: _input,
         timestamp: Date.now()
     };

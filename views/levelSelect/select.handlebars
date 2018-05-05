@@ -1,8 +1,8 @@
 <p>someday you will be able to select a level here...</p>
 {{#each levels}}
-    <p>{{{name}}}<br>
-    {{{tiles}}}
-    width = {{{width}}}<br>
-    height = {{{height}}}</p>
-    <a href="/levelSelect/level/{{{_id}}}">Try {{{name}}}</a>
+    <p>{{{this.name}}}<br>
+    {{{this.tiles}}}<br>
+    width = {{{this.width}}}<br>
+    height = {{{this.height}}}</p>
+    <a href="/levelSelect/level/{{{this._id}}}">Try {{{this.name}}}</a>
 {{/each}}

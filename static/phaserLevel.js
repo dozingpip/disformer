@@ -23,9 +23,6 @@ var game = new Phaser.Game(config);
 
 function preload ()
 {
-    for(let i = 0; i< tiles.length; i++){
-        this.load.image('tile '+tiles[i].index, tiles[i].color);
-    }
     this.load.image('sky', '../assets/sky.png');
     this.load.image('ground', '../assets/platform.png');
     this.load.image('star', '../assets/star.png');
@@ -41,8 +38,12 @@ function createLevel(tiles, w, h){
     config.height = h;
     platforms = this.physics.add.staticGroup();
     for(let i = 0; i< tiles.length; i++){
-        platforms.create(tiles[i].row*colWidth, tiles[i].col*rowHeight, 'tile '+tiles[i].index);
+        for(let j = 0; j<tiles[i].length; j++){
+            this.load.image('tile at r '+i+', c '+j, '../assets/sky.png');
+            platforms.create(tiles[i][j].row*colWidth, tiles[i][j].col*rowHeight, 'tile at r '+i+', c '+j);
+        }
     }
+    
 }
 
 function create ()

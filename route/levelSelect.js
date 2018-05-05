@@ -59,8 +59,8 @@ var readLevelInput = function(_input, _name, _username) {
             tile = {
                 character: char,
                 //effect: tileDb.retrieveByChar(char),
-                row: i,
-                col: j
+                row: j,
+                col: i
             }
             
             

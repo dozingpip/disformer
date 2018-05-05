@@ -41,7 +41,7 @@ function createLevel(tiles, w, h){
     config.height = h;
     platforms = this.physics.add.staticGroup();
     for(let i = 0; i< tiles.length; i++){
-        platforms.create(tiles[i].row*colWidth, tiles[i].col*rowHeight, 'tile '+tiles[i].index)
+        platforms.create(tiles[i].row*colWidth, tiles[i].col*rowHeight, 'tile '+tiles[i].index);
     }
 }
 

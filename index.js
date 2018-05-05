@@ -80,10 +80,6 @@ app.get('/auth/discord/callback',
      function(req, res) { res.redirect('/') } // auth success
 );
 
-app.get('/levelSelect', checkAuth, function(req, res, next){
-    passport.authenticate('discord', { failureRedirect: '/login' }), function(req, res) { res.redirect('/levelSelect') } // auth success
-});
-
 app.get('/login', passport.authenticate('discord', {
     scope: scopes }), function(req, res) {});
 

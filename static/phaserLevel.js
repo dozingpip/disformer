@@ -18,12 +18,14 @@ var config = {
         create: create,
         update: update
     },
-    tiles: []
+    tiles: [],
+    lineSpacing: 2
 };
 
 var game = new Phaser.Game(config);
 var platforms;
 var player;
+var exitPoints;
 
 function preload ()
 {
@@ -41,7 +43,7 @@ function preload ()
             console.log("row "+ i);
             for(let j = 0; j<config.tiles[i].length; j++){
                 console.log("col "+j);
-                this.load.image('tile at r '+i+', c '+j, '/images/bomb.png');
+                this.load.image('tile', '/images/bomb.png');
             }
         }
     }
@@ -49,10 +51,9 @@ function preload ()
 }
 
 function createLevel(_input, w, h){
-    config.width = w;
-    config.height = h;
-
-    config.tiles = stringToTiles(_input);
+    config.tiles = _input;
+    config.width = w*colWidth;
+    config.height = h*rowHeight;
 }
 
 function create ()
@@ -61,15 +62,18 @@ function create ()
     this.add.image(400, 300, 'star');
 
     platforms = this.physics.add.staticGroup();
+    exitPoints = this.physics.add.group();
     console.log("boop" + config.tiles.length);
     for(let i = 0; i< config.tiles.length; i++){
         console.log("row "+ i);
         for(let j = 0; j<config.tiles[i].length; j++){
-            console.log("x "+ config.tiles[i][j].col*colWidth+ ", y: "+ config.tiles[i][j].row*rowHeight);
-            platforms.create(config.tiles[i][j].col*colWidth, config.tiles[i][j].row*rowHeight, 'tile at r '+i+', c '+j);
+            x = config.tiles[i][j].col*colWidth;
+            y = config.tiles[i][j].row*rowHeight+(config.lineSpacing*rowHeight);
+            console.log("x "+ x+ ", y: "+ y+ " spacing "+ config.lineSpacing*rowHeight);
+            platforms.create(x, y, 'tile');
+            //charToEffect(config.tiles[i][j].character);
         }
     }
-
     
     platforms.create(10, 10, 'bomb');
 
@@ -191,4 +195,61 @@ function stringToTiles(_input){
     }
 
     return tiles;
+}
+
+function playerOverlapWith(group, onOverlapFunction){
+    this.physics.add.overlap(player, group, onOverlapFunction, null, this);
+}
+
+function charToEffect(char){
+    switch(char){
+        case '.':
+            playerOverlapWith(exitPoints, exitLevel);
+            break;
+        case '!':
+            // exit point with lots of points
+            break;
+        case 'f':// fire
+            playerOverlapWith(damage, damagePlayer);
+            break;
+        case 'd':
+            // set y velocity of tiles 1 row up to 200, goes down fast
+            break;
+        case 'u':
+            // set velocity of tiles 1 row down (what the player is standing on) to -200, goes up fast
+            break;
+        case 'h':
+            // heals player 1 damage point
+            break;
+        case 't':// thorns
+            playerOverlapWith(damage, damagePlayer);
+            break;
+        case 'v':
+            // display how far away player is from exit point for a short amount of time
+            break;
+        case 'p':
+            // pause surroundings.  nothing is interactable for 5 seconds
+            break;
+        case 'o':
+            //collectible, means points
+            break;
+        case '?':
+            //points and random effect other than level exit
+            break;
+        case 'l':
+            // push the player left
+            break;
+        case 'r':
+            //push the player right
+            break;
+        case 's'://spikes
+            playerOverlapWith(damage, damagePlayer);
+            break;
+        case ' ':
+            console.log("gap!");
+            break;
+        default:
+            console.log("unhandled character");
+            break;
+    }
 }

@@ -1,8 +1,10 @@
-<p>someday you will be able to select a level here...</p>
 {{#each levels}}
-    <p>{{{this.name}}}<br>
-    {{{this.message}}}<br>
-    width = {{{this.width}}}<br>
-    height = {{{this.height}}}</p>
-    <a href="/levelSelect/level/{{{this._id}}}">Try {{{this.name}}}</a>
+    <a display="block" text-decoration="none" href="/levelSelect/level/{{{this._id}}}">
+        <div class = "level">
+            <h2>{{{this.name}}}</h2>
+            <p>The level was generated with this text: "{{{this.message}}}"<br>
+            win rate : {{{this.wins}}} / {{{this.tries}}}
+            </p>
+        </div>
+    </a>
 {{/each}}

@@ -94,24 +94,22 @@ function create ()
 	heal = this.physics.add.staticGroup();
 	points = this.physics.add.staticGroup();
 	pause = this.physics.add.staticGroup();
-	var sky = this.add.image(400, 300, 'sky');
-	sky.scrollFactorY = 0;
+	// var sky = this.add.image(400, 300, 'sky');
+	// sky.scrollFactorY = 0;
 	
 	scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#fff' });
 	scoreText.scrollFactorY = 0;
 	healthText = this.add.text(16, 48, 'heath: '+health, { fontSize: '32px', fill: '#fff' });
 	healthText.scrollFactorY = 0;
 
-	console.log("boop" + config.tiles.length);
+	console.log("num tiles " + config.tiles.length);
 	var lastY;
 	for(let i = 0; i< config.tiles.length; i++){
-		console.log("row "+ i);
 		for(let j = 0; j<config.tiles[i].length; j++){
 			cell = config.tiles[i][j];
 			x = startX+cell.col*colWidth;
 			y = startY+cell.row*rowHeight+(config.lineSpacing*rowHeight*cell.row);
 			lastY = y;
-			console.log("x "+ x+ ", y: "+ y+ " spacing "+ config.lineSpacing*rowHeight);
 			charToEffect(cell.character, x, y);
 			text = this.add.text(x, y+10, cell.character, {
 				font: "14px Viga",

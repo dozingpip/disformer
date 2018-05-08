@@ -1,0 +1,23 @@
+Briefly describe the nature of the dynamic content of your site. What changes and why?
+
+Level select page updates when users add them through the create level page or when the discord bot is on and someone says the keyword (ping) in the channel it's in.  The level select page updates to reflect the addition of the new level, and by clicking the link, users can try walk and jump around in generated level.
+
+What is the file path at which I'll find the most interesting or 
+complex "view" in your site?
+views/partials/select.handlebars
+
+ Describe a "partial" you developed to use on multiple pages or to keep 
+code for dynamic content in its own file. (Include file paths so I can find the code.)
+
+views/partials/level.handlebars
+
+There's not much there in the handlebars file itself, but in the static javascript file it references is all the things for creating levels, traversing them, and winning/ losing.
+
+session
+user stays logged in across page loads
+
+Auth
+used discord's oauth (around line 42 in index.js)
+
+Rest API
+Can get levels by id (routes/levelSelect.js, lines 8 to 19).

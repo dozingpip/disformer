@@ -8,8 +8,7 @@
     "server": "node index.js",
     "bot": "node bot.js",
     "serverbot": "concurrently --kill-others \"npm run server\" \"npm run bot\"",
-    "serverbot-debug": "\"npm run serverbot\" --inspect",
-    "heroku-postbuild": "node bot.js"
+    "serverbot-debug": "\"npm run serverbot\" --inspect"
   },
   "repository": {
     "type": "git",

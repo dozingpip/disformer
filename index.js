@@ -65,7 +65,7 @@ passport.use(new DiscordStrategy(
 // that files can be found there and warn you when not found.
 app.use(express.static(__dirname+'/static'));
 
-app.use(session(require('./config/express-session-options')));
+app.use(session(require('./config-example/express-session-options')));
 
 app.use(passport.initialize()); 
 app.use(passport.session());

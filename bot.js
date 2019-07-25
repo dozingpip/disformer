@@ -5,7 +5,8 @@ const client = new Discord.Client();
 const keyword = "ping";
 const keywordResponse = "pong";
 
-const token = require('./config/discordAuth-options').bot_token;
+// const token = require('./config/discordAuth-options').bot_token;
+const token = process.env.BOT_TOKEN;
 
 /*
 	A ping pong bot, whenever you send "ping", it replies "pong".

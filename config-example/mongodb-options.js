@@ -1,4 +1,4 @@
 module.exports = {
     uri: "mongodb://localhost:27017",
-    dbName: 'db not called disformer'
+    DB_NAME: 'db not called disformer'
 }
